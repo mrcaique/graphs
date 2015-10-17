@@ -1,8 +1,10 @@
 """
 	A class that represent a Graph G. This graph was constructed
 	with represent a dictionary of vertices and every vertex is
-	a set.
+	a dictionary.
 """
+from random import choice
+
 class Graph(object):
 	# Contructs a intance of the graph G
 	def __init__(self, vertices={}, directed=False, valued=False):
@@ -13,17 +15,27 @@ class Graph(object):
 	# Add a vetex in the graph G
 	def add_vertex(self, vertex):
 		if vertex not in self.vertices:
-			self.vertices[vertex] = set()
+			self.vertices[vertex] = {}
+
+	# Remove a vertex in the graph G
+	def remove_vertex(self, vertex):
+		if vertex in self.vertices:
+			del self.vertices[vertex]
+			for v in self.vertices:
+				if vertex in v:
+					del v[vertex]
 
 	# Connects (add a edge) between two given vertices
 	def connect(self, vertex1, vertex2):
-		self.vertices[vertex1].add(vertex2)
-		self.vertices[vertex2].add(vertex1)
+		if vertex1 in self.vertices and vertex2 in self.vertices:
+			self.vertices[vertex1] = vertex2
+			self.vertices[vertex2] = vertex1
 
 	# Disconnects (remove the edges) between two given vertices 
 	def disconnect(self, vertex1, vertex2):
-		self.vertices[vertex1].remove(vertex2)
-		self.vertices[vertex2].remove(vertex1)
+		if vertex1 in self.vertices and vertex2 in self.vertices:
+			del self.vertices[vertex1][vertex2]
+			del self.vertices[vertex2][vertex1]
 
 	# Shows the order of the graph G
 	def order(self):
@@ -35,29 +47,31 @@ class Graph(object):
 		set_vertices.add(self.vertices)
 		return set_vertices
 
+	# Return a random vertex
+	def get_random_vertex(self):
+		return choice(self.vertices.keys())
+
+	# Return a set with the vertex's adjacents
 	def get_adjacents(self, vertex):
-		if vertex in self.vertices:
-			set_adjacents = set()
-			set_adjacents.add(self.vertices[vertex])
-			for v in self.vertices:
-				if v == vertex:
-					set_adjacents.add(v)
-			return set_adjacents
+		set_adjacents = set()
+		set_adjacents.add(self.vertices[vertex])
+		for v in self.vertices:
+			if vertex in v:
+				set_adjacents.add(v)
+		return set_adjacents
 
 	# Get the degree of emission of a given vertex
-	def get_outdegree(self, vetex):
-		if vetex in self.vertices:
-			return len(self.vertices[vertex])
+	def get_vertex_outdegree(self, vertex):
+		return len(self.vertices[vertex])
 
 	# Get the degree of reception of a given vertex
-	def get_indegree(self, vertex):
+	def get_vertex_indegree(self, vertex):
 		count = 0
-		if vertex in self.vertices:
-			for v in self.vertices:
-				if vertex == v:
-					count = count + 1
-			return count
+		for v in self.vertices:
+			if vertex in v:
+				count = count + 1
+		return count
 
 	# Get the degree of a given vertex
-	def get_degree(self, vetex):
-		return get_outdegree(vertex) + get_indegree(vertex)
+	def get_degree(self, vertex):
+		return len(self.get_adjacents(vertex))
