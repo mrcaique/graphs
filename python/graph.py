@@ -1,13 +1,13 @@
 """
 	A class that represent a Graph G. This graph was constructed
-	with represent a dictionary of vertices and every vertex is
+	for represent a dictionary of vertices and every vertex is
 	a set.
 """
 #!/usr/bin/env python3
 from random import choice
 
 class Graph(object):
-	# Contructs a intance of the graph G
+	# Contructs a instance of the graph G
 	def __init__(self, vertices={}, directed=False):
 		self.vertices = vertices
 		self.directed = directed
@@ -20,9 +20,9 @@ class Graph(object):
 	# Remove a vertex in the graph G
 	def remove_vertex(self, vertex):
 		if vertex in self.vertices:
-			for v in self.vertices:
-				if vertex in self.vertices[v]:
-					self.vertices[v].remove(vertex)
+			for vert in self.vertices:
+				if vertex in self.vertices[vert]:
+					self.vertices[vert].remove(vertex)
 			del self.vertices[vertex]
 
 	# Connects (add a edge) between two given vertices
@@ -48,14 +48,14 @@ class Graph(object):
 
 	# Return a random vertex
 	def get_random_vertex(self):
-		return choice(self.vertices.keys())
+		return choice(list(self.vertices.keys()))
 
 	# Return a set with the vertex's adjacents
 	def get_adjacents(self, vertex):
 		set_adjacents = set()
-		for v in self.vertices:
-			if vertex in self.vertices[v]:
-				set_adjacents.add(v)
+		for vert in self.vertices:
+			if vertex in self.vertices[vert]:
+				set_adjacents.add(vert)
 		return set_adjacents
 
 	# Get the degree of emission of a given vertex
