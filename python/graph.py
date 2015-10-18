@@ -25,17 +25,34 @@ class Graph(object):
 					self.vertices[vert].remove(vertex)
 			del self.vertices[vertex]
 
-	# Connects (add a edge) between two given vertices
+	# Connects (add a edge) between two given vertices.
+	# If is a directed graph, if the function be called
+	# like this:
+	#		graph.connect(A, B)
+	# The connection will be there:
+	#		A -----> B
 	def connect(self, vertex1, vertex2):
 		if vertex1 in self.vertices and vertex2 in self.vertices:
-			self.vertices[vertex1] = [vertex2]
-			self.vertices[vertex2] = [vertex1]
+			if self.directed == False:
+				self.vertices[vertex1] = [vertex2]
+				self.vertices[vertex2] = [vertex1]
+			else:
+				self.vertices[vertex1] = [vertex2]
 
-	# Disconnects (remove the edges) between two given vertices 
+	# Disconnects (remove the edges) between two given vertices
+	# If is a directed graph, the remove is, for example,
+	# two vertices A and B such that:
+	#		A -----> B
+	# this function should be called like this to remove the
+	# connection:
+	#		graph.disconnect(A, B) 
 	def disconnect(self, vertex1, vertex2):
 		if vertex1 in self.vertices and vertex2 in self.vertices:
-			self.vertices[vertex1].remove(vertex2)
-			self.vertices[vertex2].remove(vertex1)
+			if self.directed == False:	
+				self.vertices[vertex1].remove(vertex2)
+				self.vertices[vertex2].remove(vertex1)
+			else:
+				self.vertices[vertex1].remove(vertex2)
 
 	# Shows the order of the graph G
 	def order(self):
@@ -69,3 +86,39 @@ class Graph(object):
 	# Get the degree of a given vertex
 	def get_degree(self, vertex):
 		return len(self.get_adjacents(vertex))
+
+	# Checks if the graph is a regular graph, so,
+	# if every vertex has the same degree
+	def is_regular(self):
+		vertices = self.get_vertices()
+		vertex = vertices.pop()
+		base_degree = self.get_degree(vertex)
+		length = len(vertices)
+		while (length > 0):
+			vertex = vertices.pop()
+			degree = self.get_degree(vertex)
+			if degree != base_degree:
+				return False
+			length = len(vertices)
+		return True
+
+	# Checks if the graph is a complete graph, so,
+	# if every vertex is connect with all other 
+	# vertices of the graph G
+	def is_complete(self):
+		set_vertices = self.get_vertices()
+		for vertex in self.vertices:
+			for element in set_vertices:
+				if element not in self.vertices[vertex] and element is not vertex:
+					return False
+		return True
+
+	def transitive_closure(self, vertex):
+		adjacents = self.get_adjacents(vertex)
+		list_adjacents = list(self.vertices[vertex].values())
+		tc = adjacents
+		while (len(adjacents) > 0):
+			for element in adjacents:
+				tc.add(self.get_adjacents(element))
+			adjacents = set(list_adjacents.pop())
+		return tc

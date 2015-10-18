@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-import unittest
+from unittest import TestCase, main
 from graph import Graph
 
-class Test(unittest.TestCase):
+class Test(TestCase):
 	def test_construct_undirected_graph(self):
 		graph = Graph({
 				"a":{"b", "c", "d"},
@@ -206,5 +206,42 @@ class Test(unittest.TestCase):
 		self.assertIsNotNone(graph.get_random_vertex())
 		self.assertIsNotNone(graph.get_random_vertex())
 
+	def test_is_regular_and_complete_graph(self):
+		graph1 = Graph({
+				"a":{"b", "c"},
+				"b":{"a", "c"},
+				"c":{"a", "b"}
+			})
+		graph2 = Graph({
+				"a":{"b", "c"},
+				"b":{},
+				"c":{}
+			})
+		self.assertTrue(graph1.is_regular())
+		self.assertFalse(graph2.is_regular())
+		self.assertTrue(graph1.is_complete())
+		self.assertFalse(graph2.is_complete())
+
+	def test_construct_directed_graph(self):
+		graph = Graph({
+				"a":{"b", "c"},
+				"b":{"d"},
+				"c":{"e"},
+				"d":{},
+				"e":{}
+			}, True)
+		self.assertEqual(graph.order(), 5)
+		self.assertEqual(graph.get_vertex_indegree("a"), 0)
+		self.assertEqual(graph.get_vertex_indegree("b"), 1)
+		self.assertEqual(graph.get_vertex_indegree("c"), 1)
+		self.assertEqual(graph.get_vertex_indegree("d"), 1)
+		self.assertEqual(graph.get_vertex_indegree("e"), 1)
+
+		self.assertEqual(graph.get_vertex_outdegree("a"), 2)
+		self.assertEqual(graph.get_vertex_outdegree("b"), 1)
+		self.assertEqual(graph.get_vertex_outdegree("c"), 1)
+		self.assertEqual(graph.get_vertex_outdegree("d"), 0)
+		self.assertEqual(graph.get_vertex_outdegree("e"), 0)
+
 if __name__ == "__main__":
-	unittest.main()
+	main()
