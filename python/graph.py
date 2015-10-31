@@ -171,8 +171,9 @@ class Graph(object):
         :param vertex: Given vertex that sucessors will
             be returned.
         """
-        set_sucessors = set(self.vertices[vertex].keys())
-        return set_sucessors
+        if self.directed:
+            set_sucessors = set(self.vertices[vertex].keys())
+            return set_sucessors
 
     def get_antecessors(self, vertex):
         """
@@ -183,7 +184,8 @@ class Graph(object):
         :param vertex: Given vertex that antecessors will
             be returned.
         """
-        return self.get_adjacents(vertex)
+        if self.directed:
+            return self.get_adjacents(vertex)
 
     def get_outdegree(self, vertex):
         """
@@ -193,7 +195,8 @@ class Graph(object):
         :param vertex: The vertex that the degree of
             emission will ve returned
         """
-        return len(self.vertices[vertex])
+        if self.directed:
+            return len(self.vertices[vertex])
 
     def get_indegree(self, vertex):
         """
@@ -203,7 +206,8 @@ class Graph(object):
         :param vertex: The vertex that the degree of
             reception will ve returned
         """
-        return len(self.get_adjacents(vertex))
+        if self.directed:
+            return len(self.get_adjacents(vertex))
 
     def get_value(self, vertex1, vertex2):
         """
@@ -219,12 +223,19 @@ class Graph(object):
         :param vertex1: A vertex.
         :param vertex2: Another vertex.
         """
-        return self.vertices[vertex1][vertex2]
+        if self.valued:
+            try:
+                value = self.vertices[vertex1][vertex2]
+            except KeyError as ke:
+                print("Impossible to get the value")
+            else:
+                return value
 
     ########################
     #  Derivative Actions  #
     ########################
     # Derivative actions for a undirected graph
+    # (except has_cycle)
 
     def is_regular(self):
         """
@@ -269,9 +280,9 @@ class Graph(object):
         Checks if there is at least one path between 
         each pair of vertices of G
         """
-        return set(self.vertices.keys()) == self.transitive_closure(self.get_random_vertex(), set())
+        return (set(self.vertices.keys())) == self.transitive_closure(self.get_random_vertex(), set())
 
-    def has_cycle(self, vertex, actual_v, previous_v, visited):
+    def has_cycle(self, vertex, actual_v, previous_v, visited=set()):
         """
         Checks if the graph G has a cycle
 
@@ -297,4 +308,4 @@ class Graph(object):
         if G not has cycle and if G is a connected graph
         """
         vertex = self.get_random_vertex()
-        return self.is_connected() and not(self.has_cycle(vertex, vertex, None, set()))
+        return self.is_connected() and not(self.has_cycle(vertex, vertex, None))
