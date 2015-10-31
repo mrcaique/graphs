@@ -271,7 +271,7 @@ class Graph(object):
         """
         return set(self.vertices.keys()) == self.transitive_closure(self.get_random_vertex(), set())
 
-    def has_cycle(self, vertex, actual_v, previous_v, visited=set()):
+    def has_cycle(self, vertex, actual_v, previous_v, visited):
         """
         Checks if the graph G has a cycle
 
@@ -284,7 +284,7 @@ class Graph(object):
         if actual_v in visited:
             return actual_v is vertex
         visited.add(actual_v)
-        for adjacent in self.get_adjacents(vertex):
+        for adjacent in self.get_adjacents(actual_v):
             if adjacent != previous_v:
                 if self.has_cycle(vertex, adjacent, actual_v, visited):
                     return True
@@ -297,4 +297,4 @@ class Graph(object):
         if G not has cycle and if G is a connected graph
         """
         vertex = self.get_random_vertex()
-        return self.is_connected() and not(self.has_cycle(vertex, vertex, None))
+        return self.is_connected() and not(self.has_cycle(vertex, vertex, None, set()))

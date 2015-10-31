@@ -269,29 +269,35 @@ class TestUndirected(TestCase):
         self.assertTrue(graph1.is_connected())
         self.assertFalse(graph2.is_connected())
 
-    # Not working
-    #def test_is_tree(self):
-    #    g1 = Graph({
-    #           "a":{"b":None, "c":None},
-    #           "b":{"a":None, "d":None, "e":None},
-    #           "c":{"a":None, "f":None, "g":None},
-    #           "d":{"b":None},
-    #           "e":{"b":None},
-    #           "f":{"c":None},
-    #           "g":{"c":None}
-    #       })
-    #    g2 = Graph({
-    #           "a":{"b":None, "c":None},
-    #           "b":{"a":None, "c":None},
-    #           "c":{"a":None, "b":None}
-    #       })
-    #    g3 = Graph({
-    #           "a":{},
-    #           "b":{}
-    #       })
-    #    self.assertTrue(g1.is_tree())
-    #    self.assertFalse(g2.is_tree())
-    #    self.assertFalse(g3.is_tree())
+    def test_is_tree(self):
+        g1 = Graph({
+               "a":{"b":None, "c":None},
+               "b":{"a":None, "d":None, "e":None},
+               "c":{"a":None, "f":None, "g":None},
+               "d":{"b":None},
+               "e":{"b":None},
+               "f":{"c":None},
+               "g":{"c":None}
+           })
+        g2 = Graph({
+               "a":{"b":None, "c":None},
+               "b":{"a":None, "c":None},
+               "c":{"a":None, "b":None}
+           })
+        g3 = Graph({
+               "a":{},
+               "b":{}
+           })
+        g4 = Graph({
+                "a":{},
+                "b":{"c":None, "d":None},
+                "c":{"b":None, "d":None},
+                "d":{"b":None, "c":None}
+            })
+        self.assertTrue(g1.is_tree())
+        self.assertFalse(g2.is_tree())
+        self.assertFalse(g3.is_tree())
+        self.assertFalse(g4.is_tree())
 
 if __name__ == "__main__":
     main()
