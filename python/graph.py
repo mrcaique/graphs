@@ -108,7 +108,10 @@ class Graph(object):
                 del self.vertices[vertex1][vertex2]
                 del self.vertices[vertex2][vertex1]
             else:
-                del self.vertices[vertex1][vertex2]
+                try:
+                    del self.vertices[vertex1][vertex2]
+                except KeyError as e:
+                    print("Impossible to disconnect")
 
     def order(self):
         """
@@ -138,9 +141,9 @@ class Graph(object):
             will be added in the set.
         """
         set_adjacents = set()
-        for vert in self.vertices:
-            if vertex in self.vertices[vert]:
-                set_adjacents.add(vert)
+        for v in self.vertices:
+            if vertex in self.vertices[v]:
+                set_adjacents.add(v)
         return set_adjacents
 
     def get_degree(self, vertex):
@@ -246,7 +249,7 @@ class Graph(object):
                 return False
         return True
 
-    def transitive_closure(self, vertex, visited=set()):
+    def transitive_closure(self, vertex, visited):
         """
         Returns a set content every vertices of G that 
         are transitively reachable starting in "vertex"
@@ -266,7 +269,7 @@ class Graph(object):
         Checks if there is at least one path between 
         each pair of vertices of G
         """
-        return set(self.vertices.keys()) == self.transitive_closure(self.get_random_vertex())
+        return set(self.vertices.keys()) == self.transitive_closure(self.get_random_vertex(), set())
 
     def has_cycle(self, vertex, actual_v, previous_v, visited=set()):
         """
@@ -294,4 +297,4 @@ class Graph(object):
         if G not has cycle and if G is a connected graph
         """
         vertex = self.get_random_vertex()
-        return self.is_connected() and not(self.has_cycle(vertex, vertex, None, set()))
+        return self.is_connected() and not(self.has_cycle(vertex, vertex, None))
