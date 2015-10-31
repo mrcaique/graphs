@@ -1,6 +1,9 @@
 # Run the tests
-test:
-	python3 tests.py -v
+utest:
+	python3 test_undirected.py -v
+
+dtest:
+	python3 test_directed.py -v
 
 # Remove the pycache folder, generated after
 # run the tests
