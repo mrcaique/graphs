@@ -5,6 +5,9 @@ utest:
 dtest:
 	python3 test_directed.py -v
 
+vtest:
+	python3 test_valued.py -v
+
 # Remove the pycache folder, generated after
 # run the tests
 remove:

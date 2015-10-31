@@ -157,5 +157,27 @@ class TestDirected(TestCase):
         self.assertRaises(graph.disconnect("a", "c"))
         self.assertRaises(KeyError, graph.disconnect("b", "a"))
 
+    def test_has_cycle(self):
+        dg1 = Graph({
+                "a":{"b":None, "c":None},
+                "b":{"d":None, "e":None},
+                "c":{"f":None, "g":None},
+                "d":{},
+                "e":{},
+                "f":{},
+                "g":{}
+            }, True)
+
+        dg2 = Graph({
+                "a":{"b":None},
+                "b":{"c":None},
+                "c":{"a":None}
+            }, True) 
+
+        random_dg1 = dg1.get_random_vertex()
+        random_dg2 = dg2.get_random_vertex()
+        self.assertFalse(dg1.has_cycle(random_dg1, random_dg1, None))
+        self.assertTrue(dg2.has_cycle(random_dg2, random_dg2, None))
+
 if __name__ == "__main__":
     main()
