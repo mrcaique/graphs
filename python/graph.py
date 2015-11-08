@@ -19,6 +19,7 @@
 # :license: Gnu General Public License version 3
 #
 from random import choice
+from graph_exceptions import VertexNotFound, NotDigraph, NotValued
 
 class Graph(object):
     #######################
@@ -28,8 +29,7 @@ class Graph(object):
     # valued directed graph or valued undirected graph.
 
     def __init__(self, vertices={}, directed=False, valued=False):
-        """
-        Constructs a instance of the graph G
+        """Constructs a instance of the graph G
 
         :param vertices: The vertices of the graph,
             each vertex is a set.
@@ -37,37 +37,41 @@ class Graph(object):
             it is not, by default.
         :param valued: If is a graph valued or not,
             it is not, by default.
+
         """
         self.vertices = vertices
         self.directed = directed
         self.valued = valued
 
     def add_vertex(self, vertex):
-        """
-        Add a vetex in the graph G
+        """Add a vetex in the graph G
 
         :param vertex: The vertex that will
             be added in the graph
+        :rtype: void
+
         """
         if vertex not in self.vertices:
                 self.vertices[vertex] = {}
 
     def remove_vertex(self, vertex):
-        """
-        Remove a vertex in the graph G
+        """Remove a vertex in the graph G
 
         :param vertex: The vertex that will
             be removed in the graph
+        :rtype: void
+
         """
         if vertex in self.vertices:
             for v in self.vertices:
                 if vertex in self.vertices[v]:
                     del self.vertices[v][vertex]
             del self.vertices[vertex]
+        else:
+            raise VertexNotFound()
 
     def connect(self, vertex1, vertex2, value=None):
-        """
-        Connects (add a edge) between two given vertices.
+        """Connects (add a edge) between two given vertices.
         If is a directed graph, if the function be called
         like this:
             graph.connect(A, B)
@@ -80,17 +84,20 @@ class Graph(object):
             other vertex, so, the vertex1
         :param value: The value of edge that connects vertex1
             with vertex2, None by default.
+        :rtype: void
+
         """
-        if vertex1 and vertex2 in self.vertices:
+        if vertex1 in self.vertices and vertex2 in self.vertices:
             if not self.directed:
                 self.vertices[vertex1][vertex2] = value
                 self.vertices[vertex2][vertex1] = value
             else:
                 self.vertices[vertex1][vertex2] = value
+        else:
+            raise VertexNotFound()
 
     def disconnect(self, vertex1, vertex2):
-        """
-        Disconnects (remove the edges) between two given vertices
+        """Disconnects (remove the edges) between two given vertices
         If is a directed graph, the remove is, for example,
         two vertices A and B such that:
             A -----> B
@@ -102,8 +109,10 @@ class Graph(object):
             other vertex, so, the vertex2
         :param vertex2: A vertex that will be disconnected with
             other vertex, so, the vertex1
+        :rtype: void
+
         """
-        if vertex1 and vertex2 in self.vertices:
+        if vertex1 in self.vertices and vertex2 in self.vertices:
             if not self.directed:
                 del self.vertices[vertex1][vertex2]
                 del self.vertices[vertex2][vertex1]
@@ -112,33 +121,42 @@ class Graph(object):
                     del self.vertices[vertex1][vertex2]
                 except KeyError as e:
                     print("Impossible to disconnect")
+        else:
+            raise VertexNotFound()
 
     def order(self):
-        """
-        Shows the order of the graph G. Order of a graph
+        """Shows the order of the graph G. Order of a graph
         is the number of vertices of this graph.
+
+        :rtype: int
+
         """
         return len(self.vertices)
 
     def get_vertices(self):
-        """
-        Get the set with the vertices of G
+        """Get the set with the vertices of G
+
+        :rtype: set
+
         """
         set_vertices = set(self.vertices.keys())
         return set_vertices
 
     def get_random_vertex(self):
-        """
-        Returns a random vertex
+        """Returns a random vertex
+
+        :rtype: auto
+
         """
         return choice(list(self.vertices.keys()))
 
     def get_adjacents(self, vertex):
-        """
-        Return a set with the vertex's adjacents
+        """Return a set with the vertex's adjacents
 
         :param vertex: The vertex that their adjacents
             will be added in the set.
+        :rtype: set
+
         """
         set_adjacents = set()
         for v in self.vertices:
@@ -147,13 +165,14 @@ class Graph(object):
         return set_adjacents
 
     def get_degree(self, vertex):
-        """
-        Get the degree of a given vertex. Degree
+        """Get the degree of a given vertex. Degree
         of a vertex is the number of this adjacents
         vertices
 
         :param vetex: The vertex that the degree
             will be returned
+        :rtype: int
+
         """
         return len(self.get_adjacents(vertex))
 
@@ -162,56 +181,72 @@ class Graph(object):
     ########################
     # Actions for a specific type of graph
 
-    def get_sucessors(self, vertex):
-        """
-        For directed graphs (valued or not).
-        Returns a set with the sucessors vertices 
+    def get_successors(self, vertex):
+        """For directed graphs (valued or not).
+        Returns a set with the successors vertices
         of a given vertex
 
-        :param vertex: Given vertex that sucessors will
+        :param vertex: Given vertex that successors will
             be returned.
+        :rtype: set
+
         """
         if self.directed:
-            set_sucessors = set(self.vertices[vertex].keys())
-            return set_sucessors
+            set_successors = set(self.vertices[vertex].keys())
+            return set_successors
+        else:
+            raise NotDigraph("Method for digraphs. \
+                Try use get_adjacents(vertex)")
 
-    def get_antecessors(self, vertex):
-        """
-        For directed graphs (valued or not).
-        Returns a set with the antecessors vertices 
+    def get_predecessors(self, vertex):
+        """For directed graphs (valued or not).
+        Returns a set with the predecessors vertices
         of a given vertex
 
-        :param vertex: Given vertex that antecessors will
+        :param vertex: Given vertex that predecessors will
             be returned.
+        :rtype: set
+
         """
         if self.directed:
             return self.get_adjacents(vertex)
+        else:
+            raise NotDigraph("Method for digraphs. \
+                Try use get_adjacents(vertex).")
 
     def get_outdegree(self, vertex):
-        """
-        For directed graphs (valued or not).
+        """For directed graphs (valued or not).
         Get the degree of emission of a given vertex
 
         :param vertex: The vertex that the degree of
             emission will ve returned
+        :rtype: int
+
         """
         if self.directed:
             return len(self.vertices[vertex])
+        else:
+            raise NotDigraph("Method for digraphs. \
+                Try use get_degree(vertex).")
 
     def get_indegree(self, vertex):
-        """
-        For directed graphs (valued or not).
+        """For directed graphs (valued or not).
         Get the degree of reception of a given vertex
 
         :param vertex: The vertex that the degree of
             reception will ve returned
+
+        :rtype: int
+
         """
         if self.directed:
             return len(self.get_adjacents(vertex))
+        else:
+            raise NotDigraph("Method for digraphs. \
+                Try use get_degree(vertex).")
 
     def get_value(self, vertex1, vertex2):
-        """
-        For valued graphs (directed or not).
+        """For valued graphs (directed or not).
         Get the value of a edge between the vertex1
         and vertex2. If G is a directed graph, such 
         that:
@@ -222,6 +257,8 @@ class Graph(object):
 
         :param vertex1: A vertex.
         :param vertex2: Another vertex.
+        :rtype: int
+
         """
         if self.valued:
             try:
@@ -230,6 +267,8 @@ class Graph(object):
                 print("Impossible to get the value")
             else:
                 return value
+        else:
+            raise NotValued()
 
     ########################
     #  Derivative Actions  #
@@ -238,9 +277,11 @@ class Graph(object):
     # (except has_cycle)
 
     def is_regular(self):
-        """
-        Checks if the graph is a regular graph, so,
+        """Checks if the graph is a regular graph, so,
         if each vertex of G has the same degree
+
+        :rtype: bool
+
         """
         base_degree = self.get_degree(self.get_random_vertex())
         for v in self.vertices:
@@ -249,10 +290,12 @@ class Graph(object):
         return True
 
     def is_complete(self):
-        """
-        Checks if the graph is a complete graph, so,
+        """Checks if the graph is a complete graph, so,
         if every vertex is connect with all other 
         vertices of the graph G
+
+        :rtype: bool
+
         """
         n = self.order() - 1
         for v in self.vertices:
@@ -261,13 +304,14 @@ class Graph(object):
         return True
 
     def transitive_closure(self, vertex, visited):
-        """
-        Returns a set content every vertices of G that 
+        """Returns a set content every vertices of G that
         are transitively reachable starting in "vertex"
 
         :param vertex: Starting vertex to see every 
             vertex reachable from it.
         :param visited: Set with the visited vertices.
+        :rtype: bool
+
         """
         visited.add(vertex)
         for adjacent in self.get_adjacents(vertex):
@@ -276,21 +320,24 @@ class Graph(object):
         return visited
 
     def is_connected(self):
-        """
-        Checks if there is at least one path between 
+        """Checks if there is at least one path between
         each pair of vertices of G
+
+        :rtype: bool
+
         """
         return (set(self.vertices.keys())) == self.transitive_closure(self.get_random_vertex(), set())
 
     def has_cycle(self, vertex, actual_v, previous_v, visited=set()):
-        """
-        Checks if the graph G has a cycle
+        """Checks if the graph G has a cycle
 
         :param vetex: Initial vertex.
         :param actual_v: Actual vertice to compare with
             their adjacents vertices.
         :param previous_v: Previous vertex of actual_v.
         :param visited: Set with all vertices visited.
+        :rtype: bool
+
         """
         if actual_v in visited:
             return actual_v is vertex
@@ -303,9 +350,11 @@ class Graph(object):
         return False
 
     def is_tree(self):
-        """
-        Checks if the graph G is a tree, in other words,
+        """Checks if the graph G is a tree, in other words,
         if G not has cycle and if G is a connected graph
+
+        :rtype: bool
+
         """
         vertex = self.get_random_vertex()
         return self.is_connected() and not(self.has_cycle(vertex, vertex, None))
