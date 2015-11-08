@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from unittest import TestCase, main
 from graph import Graph
+from graph_exceptions import NotDigraph, NotValued
 
 class TestUndirected(TestCase):
     def test_construct_undirected_graph(self):
@@ -298,6 +299,18 @@ class TestUndirected(TestCase):
         self.assertFalse(g2.is_tree())
         self.assertFalse(g3.is_tree())
         self.assertFalse(g4.is_tree())
+
+    def test_specific_actions(self):
+        g = Graph({
+                "a":{"b":None},
+                "b":{"a":None},
+            })
+
+        self.assertRaises(NotDigraph, g.get_successors, "a")
+        self.assertRaises(NotDigraph, g.get_predecessors, "b")
+        self.assertRaises(NotDigraph, g.get_indegree, "a")
+        self.assertRaises(NotDigraph, g.get_outdegree, "b")
+        self.assertRaises(NotValued, g.get_value, "a", "b")
 
 if __name__ == "__main__":
     main()

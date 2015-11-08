@@ -8,7 +8,7 @@ class TestValued(TestCase):
                 "a":{"b":2, "c":3},
                 "b":{"a":2, "c":6},
                 "c":{"a":3, "b":6},
-            }, False, True)
+            }, directed=False, valued=True)
 
         self.assertEqual(graph.get_value("a", "b"), 2)
         self.assertEqual(graph.get_value("a", "c"), 3)
@@ -20,7 +20,7 @@ class TestValued(TestCase):
                 "a":{"b":3},
                 "b":{"c":4},
                 "c":{"a":2}
-            }, True, True)
+            }, directed=True, valued=True)
 
         self.assertEqual(dg.get_value("a", "b"), 3)
         self.assertEqual(dg.get_value("b", "c"), 4)
