@@ -68,7 +68,8 @@ class Graph(object):
                     del self.vertices[v][vertex]
             del self.vertices[vertex]
         else:
-            raise VertexNotFound()
+            raise VertexNotFound("Vertex not found. \
+                Use get_vertices() to see the vertices of the graph.")
 
     def connect(self, vertex1, vertex2, value=None):
         """Connects (add a edge) between two given vertices.
@@ -94,7 +95,8 @@ class Graph(object):
             else:
                 self.vertices[vertex1][vertex2] = value
         else:
-            raise VertexNotFound()
+            raise VertexNotFound("Vertex (or vertices) not found. \
+                Use get_vertices() to see the vertices of the graph.")
 
     def disconnect(self, vertex1, vertex2):
         """Disconnects (remove the edges) between two given vertices
@@ -122,7 +124,8 @@ class Graph(object):
                 except KeyError as e:
                     print("Impossible to disconnect")
         else:
-            raise VertexNotFound()
+            raise VertexNotFound("Vertex (or vertices) not found. \
+                Use get_vertices() to see the vertices of the graph.")
 
     def order(self):
         """Shows the order of the graph G. Order of a graph
