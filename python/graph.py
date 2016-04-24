@@ -288,7 +288,7 @@ class Graph(object):
         """
         base_degree = self.get_degree(self.get_random_vertex())
         for v in self.vertices:
-            if self.get_degree(v) is not base_degree:
+            if self.get_degree(v) != base_degree:
                 return False
         return True
 
@@ -302,7 +302,7 @@ class Graph(object):
         """
         n = self.order() - 1
         for v in self.vertices:
-            if self.get_degree(v) is not n:
+            if self.get_degree(v) != n:
                 return False
         return True
 
