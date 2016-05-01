@@ -32,7 +32,7 @@ class Graph(object):
         """Constructs a instance of the graph G
 
         :param vertices: The vertices of the graph,
-            each vertex is a set.
+            each vertex is a dict.
         :param directed: If is a graph directed or not,
             it is not, by default.
         :param valued: If is a graph valued or not,
